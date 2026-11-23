@@ -1,0 +1,128 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Tolak semua akses secara bawaan ke koleksi lain mana pun
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 2. Fungsi pembantu keamanan
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Kode acak 8 karakter huruf besar & angka tanpa I, O, 0, 1
+    function isValidKode(kode) {
+      return kode is string
+        && kode.size() == 8
+        && kode.matches('^[A-HJ-NP-Z2-9]{8}$');
+    }
+
+    function isOwnerExisting() {
+      return isSignedIn() && existing().ownerUid == request.auth.uid;
+    }
+
+    function isValidGameOnline(data) {
+      return data.keys().hasAll([
+          'ownerUid',
+          'judul',
+          'mapel',
+          'jumlahSoal',
+          'skema',
+          'payload',
+          'dibuatPada',
+          'diubahPada',
+          'kedaluwarsaPada'
+        ])
+        && data.keys().hasOnly([
+          'ownerUid',
+          'judul',
+          'mapel',
+          'jumlahSoal',
+          'skema',
+          'payload',
+          'dibuatPada',
+          'diubahPada',
+          'kedaluwarsaPada'
+        ])
+        && data.ownerUid is string
+        && data.ownerUid.size() >= 1
+        && data.ownerUid.size() <= 128
+        && data.ownerUid == request.auth.uid
+        && data.judul is string
+        && data.judul.size() >= 1
+        && data.judul.size() <= 120
+        && data.mapel is string
+        && data.mapel.size() >= 1
+        && data.mapel.size() <= 80
+        && data.jumlahSoal is int
+        && data.jumlahSoal >= 1
+        && data.jumlahSoal <= 5000
+        && data.skema is int
+        && data.skema == 2
+        && data.payload is string
+        && data.payload.size() >= 1
+        && data.payload.size() <= 900000
+        && data.dibuatPada is timestamp
+        && data.diubahPada is timestamp
+        && data.kedaluwarsaPada is timestamp;
+    }
+
+    // 3. Koleksi game_online/{kode}
+    match /game_online/{kode} {
+      // Baca satu dokumen: siapa saja boleh JIKA belum kedaluwarsa (atau tidak ada agar tampil pesan kode tidak ditemukan),
+      // dan pemilik selalu boleh mengecek dokumen miliknya sendiri.
+      allow get: if isValidKode(kode)
+        && (
+          resource == null
+          || existing().kedaluwarsaPada > request.time
+          || isOwnerExisting()
+        );
+
+      // Menelusuri daftar dilarang kecuali untuk halaman "Game Online Saya" milik guru yang sedang login.
+      allow list: if isSignedIn() && existing().ownerUid == request.auth.uid;
+
+      // Membuat dokumen baru: hanya guru terverifikasi, ownerUid = auth.uid, timestamp server, kedaluwarsa maksimal 90 hari.
+      allow create: if isVerifiedUser()
+        && isValidKode(kode)
+        && isValidGameOnline(incoming())
+        && incoming().dibuatPada == request.time
+        && incoming().diubahPada == request.time
+        && incoming().kedaluwarsaPada > request.time
+        && incoming().kedaluwarsaPada <= request.time + duration.value(90, 'd');
+
+      // Memperbarui isi atau memperpanjang masa berlaku: hanya pemilik, ownerUid & dibuatPada tidak boleh diubah.
+      allow update: if isVerifiedUser()
+        && isValidKode(kode)
+        && isOwnerExisting()
+        && isValidGameOnline(incoming())
+        && incoming().ownerUid == existing().ownerUid
+        && incoming().dibuatPada == existing().dibuatPada
+        && incoming().diubahPada == request.time
+        && incoming().kedaluwarsaPada > request.time
+        && incoming().kedaluwarsaPada <= request.time + duration.value(90, 'd')
+        && (
+          incoming().diff(existing()).affectedKeys().hasOnly(['kedaluwarsaPada', 'diubahPada'])
+          || incoming().diff(existing()).affectedKeys().hasOnly(['judul', 'mapel', 'jumlahSoal', 'skema', 'payload', 'diubahPada'])
+          || incoming().diff(existing()).affectedKeys().hasOnly(['judul', 'mapel', 'jumlahSoal', 'skema', 'payload', 'kedaluwarsaPada', 'diubahPada'])
+        );
+
+      // Menghapus dokumen: hanya pemilik.
+      allow delete: if isVerifiedUser()
+        && isValidKode(kode)
+        && isOwnerExisting();
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "GameOnline": {
+      "title": "GameOnline",
+      "description": "Paket game kuis tarik tambang yang diterbitkan guru ke Cloud Firestore untuk dibagikan melalui kode pendek dan QR Code.",
+      "type": "object",
+      "properties": {
+        "ownerUid": {
+          "type": "string",
+          "description": "UID guru pembuat game dari Firebase Auth (tanpa menyimpan email).",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "judul": {
+          "type": "string",
+          "description": "Judul game kuis.",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "mapel": {
+          "type": "string",
+          "description": "Mata pelajaran atau kelas.",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "jumlahSoal": {
+          "type": "integer",
+          "description": "Total jumlah soal pada paket game."
+        },
+        "skema": {
+          "type": "integer",
+          "description": "Versi format payload terkompresi (2 = format ringkas v2)."
+        },
+        "payload": {
+          "type": "string",
+          "description": "String hasil kompresi lz-string dari format ringkas v2 (tanpa array bersarang Firestore).",
+          "minLength": 1,
+          "maxLength": 900000
+        },
+        "dibuatPada": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp server saat game diterbitkan."
+        },
+        "diubahPada": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp server saat isi atau masa berlaku terakhir diperbarui."
+        },
+        "kedaluwarsaPada": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Batas waktu kedaluwarsa link (maksimal 90 hari sejak dibuat/diperpanjang)."
+        }
+      },
+      "required": [
+        "ownerUid",
+        "judul",
+        "mapel",
+        "jumlahSoal",
+        "skema",
+        "payload",
+        "dibuatPada",
+        "diubahPada",
+        "kedaluwarsaPada"
+      ]
+    }
+  },
+  "firestore": {
+    "game_online/{kode}": {
+      "schema": {
+        "$ref": "#/entities/GameOnline"
+      },
+      "description": "Dokumen game online berid kode acak 8 karakter huruf besar/angka tanpa karakter membingungkan (I, O, 0, 1)."
+    }
+  }
+}

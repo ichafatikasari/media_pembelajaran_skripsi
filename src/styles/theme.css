@@ -1,0 +1,327 @@
+:root {
+  /* Warna Tim & Aksen Arcade Pekat (Ramah Video, Tanpa Putih/Pastel Besar) */
+  --warna-merah: #FF1744;
+  --warna-merah-bayangan: #B80023;
+  --warna-merah-gelap: #7A0018;
+
+  --warna-biru: #1E6BFF;
+  --warna-biru-bayangan: #0A2FA8;
+  --warna-biru-gelap: #071F70;
+
+  --warna-kuning: #FFD400;
+  --warna-kuning-bayangan: #C79A00;
+
+  --warna-hijau: #00C853;
+  --warna-hijau-bayangan: #007A33;
+
+  --warna-langit-atas: #29B6FF;
+  --warna-langit-bawah: #0077E6;
+  --warna-rumput-terang: #3DDC4F;
+  --warna-rumput-gelap: #14A83A;
+
+  --warna-oranye: #FF9100;
+  --warna-oranye-bayangan: #C56200;
+
+  --warna-ungu: #7C4DFF;
+  --warna-ungu-bayangan: #4A1FD1;
+
+  /* Warna Dasar Navy Gelap */
+  --warna-navy: #0B1B4D;
+  --warna-navy-dalam: #071236;
+  --warna-navy-panel: #12276B;
+  --warna-navy-kartu: #173287;
+  --warna-navy-garis: #2A4CB8;
+
+  /* Teks Kontras Tinggi */
+  --warna-teks-utama: #FFFFFF;
+  --warna-teks-sekunder: #DCE7FF;
+  --warna-teks-gelap: #0B1B4D;
+
+  /* Tipografi */
+  --font-display: 'Fredoka', system-ui, -apple-system, sans-serif;
+  --font-body: 'Baloo 2', system-ui, -apple-system, sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: normal;
+}
+
+.font-body {
+  font-family: var(--font-body);
+  letter-spacing: normal;
+  line-height: 1.3;
+}
+
+.text-bacaan {
+  font-family: var(--font-body);
+  letter-spacing: normal;
+  line-height: 1.3;
+}
+
+/* Outline gelap tegas 2-4px untuk teks arcade ramah kamera */
+.teks-outline-tebal {
+  text-shadow:
+    -2px -2px 0 #071236,
+    2px -2px 0 #071236,
+    -2px 2px 0 #071236,
+    2px 2px 0 #071236,
+    0 4px 0 #071236;
+}
+
+.teks-outline-raksasa {
+  text-shadow:
+    -3px -3px 0 #071236,
+    3px -3px 0 #071236,
+    -3px 3px 0 #071236,
+    3px 3px 0 #071236,
+    0 6px 0 #071236;
+}
+
+/* Gaya kartu 3D semu dengan garis tepi tebal dan kilau atas halus */
+.kartu-3d {
+  box-shadow:
+    inset 0 3px 0 rgba(255, 255, 255, 0.22),
+    0 8px 0 #071236;
+}
+
+/* Animasi GPU murni (transform + opacity saja, 60fps, tanpa blur) */
+@keyframes arcadeNapas {
+  0%, 100% {
+    transform: translateY(0) scaleY(1);
+  }
+  50% {
+    transform: translateY(-2px) scaleY(1.025);
+  }
+}
+
+@keyframes arcadeTarikKuat {
+  0% {
+    transform: translateX(0) rotate(0deg) scale(1);
+  }
+  35% {
+    transform: translateX(-6px) rotate(-6deg) scale(1.04);
+  }
+  70% {
+    transform: translateX(2px) rotate(-2deg) scale(1.01);
+  }
+  100% {
+    transform: translateX(0) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes arcadeOleng {
+  0%, 100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateX(4px) rotate(6deg);
+  }
+  65% {
+    transform: translateX(-3px) rotate(-4deg);
+  }
+}
+
+@keyframes arcadePanik {
+  0%, 100% {
+    transform: translateY(0) rotate(-1.5deg);
+  }
+  50% {
+    transform: translateY(-3px) rotate(1.5deg);
+  }
+}
+
+@keyframes arcadeSorak {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  45% {
+    transform: translateY(-10px) scale(1.05);
+  }
+}
+
+@keyframes arcadeGoyangPanel {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-8px);
+  }
+  40% {
+    transform: translateX(8px);
+  }
+  60% {
+    transform: translateX(-5px);
+  }
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes arcadePopSkor {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.28);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes arcadeAwanLambat {
+  0% {
+    transform: translateX(-40px);
+  }
+  50% {
+    transform: translateX(40px);
+  }
+  100% {
+    transform: translateX(-40px);
+  }
+}
+
+@keyframes arcadeDebuNaik {
+  0% {
+    transform: translateY(0) scale(0.6);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translateY(-18px) scale(1.35);
+    opacity: 0;
+  }
+}
+
+@keyframes arcadeKonfetiJatuh {
+  0% {
+    transform: translateY(-14px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(180px) rotate(260deg);
+    opacity: 0;
+  }
+}
+
+@keyframes arcadeGetarLayar {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  30% {
+    transform: translate(-3px, 2px);
+  }
+  60% {
+    transform: translate(3px, -2px);
+  }
+}
+
+@keyframes arcadeKomentarMuncul {
+  0% {
+    transform: translateY(8px) scale(0.85);
+    opacity: 0;
+  }
+  15% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  85% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-6px) scale(0.95);
+    opacity: 0;
+  }
+}
+
+.anim-napas {
+  animation: arcadeNapas 2.4s ease-in-out infinite;
+}
+
+.anim-tarik {
+  animation: arcadeTarikKuat 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1;
+}
+
+.anim-oleng {
+  animation: arcadeOleng 0.55s ease-in-out 1;
+}
+
+.anim-panik {
+  animation: arcadePanik 0.65s ease-in-out infinite;
+}
+
+.anim-sorak {
+  animation: arcadeSorak 0.75s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.anim-goyang-panel {
+  animation: arcadeGoyangPanel 0.42s ease-in-out 1;
+}
+
+.anim-pop-skor {
+  animation: arcadePopSkor 0.35s cubic-bezier(0.22, 1, 0.36, 1) 1;
+}
+
+.anim-awan-lambat {
+  animation: arcadeAwanLambat 28s ease-in-out infinite;
+}
+
+.anim-debu {
+  animation: arcadeDebuNaik 0.55s ease-out forwards;
+}
+
+.anim-konfeti {
+  animation: arcadeKonfetiJatuh 1.15s ease-in forwards;
+}
+
+.anim-getar-layar {
+  animation: arcadeGetarLayar 0.3s ease-out 1;
+}
+
+.anim-komentar {
+  animation: arcadeKomentarMuncul 2s ease-in-out forwards;
+}
+
+@keyframes arcadeCountdownMantul {
+  0% {
+    transform: scale(0.35);
+    opacity: 0;
+  }
+  45% {
+    transform: scale(1.22);
+    opacity: 1;
+  }
+  72% {
+    transform: scale(0.94);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.anim-countdown-mantul {
+  animation: arcadeCountdownMantul 0.52s cubic-bezier(0.22, 1, 0.36, 1) 1;
+}
+
+/* Mode rekam video: matikan animasi berulang yang berpotensi berkedip dan pertegas garis */
+.mode-rekam-aktif .anim-panik {
+  animation: none !important;
+}
+
+.mode-rekam-aktif .teks-outline-tebal {
+  text-shadow:
+    -3px -3px 0 #071236,
+    3px -3px 0 #071236,
+    -3px 3px 0 #071236,
+    3px 3px 0 #071236,
+    0 5px 0 #071236;
+}
+
+/* Efek ringan: hentikan animasi latar awan dan kurangi partikel dekoratif */
+.efek-ringan-aktif .anim-awan-lambat,
+.efek-ringan-aktif .anim-napas {
+  animation: none !important;
+}

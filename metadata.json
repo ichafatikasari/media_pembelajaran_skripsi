@@ -1,0 +1,6 @@
+{
+  "name": "Duel Otak – Tarik Tambang Kuis",
+  "description": "Platform game kuis tarik tambang digital satu layar untuk Smartboard dan laptop.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
